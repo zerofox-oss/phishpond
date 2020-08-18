@@ -1,0 +1,18 @@
+#!/usr/local/bin/php
+<?php
+	// Set log file location from mounted volume
+	$logfile = '/var/log/phishpond/mail.log';
+	// Set timestamp for entry
+	$date = "[". date('Y-m-d H:i:s') . "] ";
+	$log_output = $date . "Captured email!\n";
+	// Get handle on incoming PHP code
+	$handle = fopen('php://stdin', 'r');
+	while(!feof($handle)) 
+	{
+		// Get contents of stdin/handle and append to $log_output
+		$buffer = trim(fgets($handle));
+		$log_output .= $date . $buffer . "\n";
+	}
+	// Write to log file including newline
+	file_put_contents($logfile, $log_output . "\n", FILE_APPEND);
+?>
