@@ -12,22 +12,28 @@ services:
     environment:
       - http_proxy=http://mitmproxy:8080
       - HTTPS_PROXY=https://mitmproxy:8080
-    command: bash -c "update-ca-certificates --verbose && apache2-foreground"
     links:
       - mitmproxy
     volumes: 
       - ./www:/var/www/html
       - ./configs/web/vhosts:/etc/apache2/sites-enabled/
       - ./configs/php/php.ini:/usr/local/etc/php/php.ini
+      - ./phpsendmail:/usr/local/bin/phpsendmail
+      - ./logs:/var/log/phishpond/
       - mitm-volume:/usr/local/share/ca-certificates/extra/
+    command: >
+      bash -c "update-ca-certificates --verbose && 
+      apache2-foreground && chmod 777 /var/log/phishpond/mail.log"
   mitmproxy:
     build:
       context: ./docker/mitmproxy
+    container_name: 'mitmproxy'
     command: mitmweb --web-host 0.0.0.0
     ports:
       - "8080:8081" 
     tty: true
     volumes:
       - mitm-volume:/home/mitmproxy/.mitmproxy/
+      - ./configs/mitmproxy/config.yaml:/home/mitmproxy/.mitmproxy/config.yaml
 volumes:
   mitm-volume:
