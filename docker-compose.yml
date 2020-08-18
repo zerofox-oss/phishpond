@@ -29,13 +29,12 @@ services:
     build:
       context: ./docker/mitmproxy
     container_name: 'mitmproxy'
-    command: bash -c "mitmweb --web-host 0.0.0.0 -s /home/mitmproxy/addons/*.py && mitmweb --web-host 0.0.0.0"
+    command: bash -c "mitmweb --web-host 0.0.0.0 -s /home/mitmproxy/addons/*.py"
     ports:
       - "8080:8081" 
     tty: true
     volumes:
       - mitm-volume:/home/mitmproxy/.mitmproxy/
       - ./configs/mitmproxy/config.yaml:/home/mitmproxy/.mitmproxy/config.yaml
-        #      - ./configs/mitmproxy/addons:/home/mitmproxy/addons/
 volumes:
   mitm-volume:
