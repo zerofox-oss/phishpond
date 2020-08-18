@@ -18,8 +18,18 @@
     If you can see this message, it means you're up and running! Yeehaw!
     <br>
   </p>
-  
+<?php
+$files = glob('./*');
+foreach($files as $file)
+{
+    if (is_dir($file)) {
+	echo "<br><a href=$file>".basename($file)."/</a>";
+    } else {
+	echo "<br><a href=$file>".basename($file)."</a>";
+    }
 
-  
+}
+
+?>
 </body>
 </html>
