@@ -36,9 +36,6 @@ RUN apt-get -y update && \
 RUN pecl install xdebug-2.8.0 && \
     docker-php-ext-enable xdebug 
 
-# Env variable for debugging
-ENV XDEBUG_CONFIG "remote_host=localhost remote_port=9000 remote_enable=1"
-
 # Install imagick
 RUN apt-get update && \
     apt-get -y --no-install-recommends install --fix-missing libmagickwand-dev && \
