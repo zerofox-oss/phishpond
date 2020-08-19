@@ -39,6 +39,5 @@ services:
     volumes:
       - mitm-volume:/home/mitmproxy/.mitmproxy/
       - ./configs/mitmproxy/config.yaml:/home/mitmproxy/.mitmproxy/config.yaml
-        #      - ./configs/mitmproxy/addons:/home/mitmproxy/addons/
 volumes:
   mitm-volume:
