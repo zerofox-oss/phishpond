@@ -11,7 +11,7 @@ services:
       - "443:443"
     environment:
       - http_proxy=http://mitmproxy:8080
-      - HTTPS_PROXY=https://mitmproxy:8080
+      - HTTPS_PROXY=http://mitmproxy:8080
       - XDEBUG_CONFIG="remote_host=localhost remote_port=9000 remote_enable=1"
     links:
       - mitmproxy
