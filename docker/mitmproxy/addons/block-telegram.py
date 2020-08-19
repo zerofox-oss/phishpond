@@ -23,7 +23,6 @@ class BlockTelegram:
         )
 
     def response(self, flow):
-        import ipdb; ipdb.set_trace()
         telegram_api_domain = 'api.telegram.org'
         if flow.request.pretty_host.endswith(telegram_api_domain):
             flow.response = http.HTTPResponse.make(
