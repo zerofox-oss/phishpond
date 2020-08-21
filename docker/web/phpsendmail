@@ -1,0 +1,42 @@
+#!/usr/local/bin/php
+<?php
+	// Set log file location from mounted volume
+	$logfile = '/var/log/phishpond/mail.log';
+	// Set timestamp for entry
+	$date = "[". date('Y-m-d H:i:s') . "] ";
+	$log_output = $date . "\n";
+	$post_output = "";
+	// Get handle on incoming PHP code
+	$handle = fopen('php://stdin', 'r');
+	while(!feof($handle)) 
+	{
+		// Get contents of stdin/handle and append to $log_output
+		$buffer = trim(fgets($handle));
+		$log_output .= $buffer . "\n";
+		$post_output .= $buffer . "\n";
+	}
+
+	# POST message
+	$url = "http://mail.capture.phishpond/";
+	$data = [
+		'message' => $post_output
+	];
+
+	//open connection
+	$ch = curl_init();
+
+	//set the url, number of POST vars, POST data
+	curl_setopt($ch,CURLOPT_URL, $url);
+	curl_setopt($ch,CURLOPT_POST, true);
+	curl_setopt($ch,CURLOPT_POSTFIELDS, $data);
+
+	//So that curl_exec returns the contents of the cURL; rather than echoing it
+	curl_setopt($ch,CURLOPT_RETURNTRANSFER, true); 
+
+	//execute post
+	$result = curl_exec($ch);
+	echo $result;
+
+	// Write to log file including newline
+	file_put_contents($logfile, $log_output . "\n", FILE_APPEND);
+?>
