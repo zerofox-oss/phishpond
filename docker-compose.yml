@@ -21,18 +21,19 @@ services:
       - ./www:/var/www/html
       - ./configs/web/vhosts:/etc/apache2/sites-enabled/
       - ./configs/php/php.ini:/usr/local/etc/php/php.ini
-      - ./phpsendmail:/usr/local/bin/phpsendmail
+      # - ./phpsendmail:/usr/local/bin/phpsendmail
       - ./logs:/var/log/phishpond/
       - mitm-volume:/usr/local/share/ca-certificates/extra/
     command: >
       bash -c "cp /usr/local/share/ca-certificates/extra/mitmproxy-ca-cert.{pem,crt} &&
       update-ca-certificates --verbose && 
-      apache2-foreground && chmod 777 /var/log/phishpond/mail.log"
+      chmod -R 777 /var/log/phishpond &&
+      apache2-foreground"
   mitmproxy:
     build:
       context: ./docker/mitmproxy
     container_name: 'mitmproxy'
-    command: bash -c "mitmweb --web-host 0.0.0.0 -s /home/mitmproxy/addons/*.py --set confdir=/home/mitmproxy/.mitmproxy" 
+    command: bash -c "mitmweb --web-host 0.0.0.0 --set confdir=/home/mitmproxy/.mitmproxy" 
     ports:
       - "8080:8081" 
     tty: true
