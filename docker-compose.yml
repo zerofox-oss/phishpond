@@ -21,7 +21,6 @@ services:
       - ./www:/var/www/html
       - ./configs/web/vhosts:/etc/apache2/sites-enabled/
       - ./configs/php/php.ini:/usr/local/etc/php/php.ini
-      # - ./phpsendmail:/usr/local/bin/phpsendmail
       - ./logs:/var/log/phishpond/
       - mitm-volume:/usr/local/share/ca-certificates/extra/
     command: >
