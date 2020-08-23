@@ -55,6 +55,12 @@ RUN docker-php-ext-install pdo_mysql && \
 
 # Enable apache modules
 RUN a2enmod rewrite headers
+RUN a2enmod dump_io
+
+# Copy in mail wrapper script
+COPY phpsendmail /usr/local/bin/phpsendmail
+RUN chmod +x /usr/local/bin/phpsendmail
 
 # Cleanup
 RUN rm -rf /usr/src/*
+
