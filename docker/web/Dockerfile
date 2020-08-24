@@ -53,6 +53,10 @@ RUN docker-php-ext-install pdo_mysql && \
     docker-php-ext-install zip && \
     docker-php-ext-install -j$(nproc) intl
 
+# Install ioncube loader
+RUN mkdir -p /usr/local/ioncube
+COPY ioncube_loader_lin_7.4.so /usr/local/ioncube
+
 # Enable apache modules
 RUN a2enmod rewrite headers
 RUN a2enmod dump_io
