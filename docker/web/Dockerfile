@@ -3,7 +3,8 @@ FROM php:7.4.2-apache-buster
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Update
-RUN apt-get -y update --fix-missing && \
+RUN apt-get clean && \
+    apt-get -y update --fix-missing && \
     apt-get upgrade -y && \
     apt-get --no-install-recommends install -y apt-utils && \
     rm -rf /var/lib/apt/lists/*
@@ -36,6 +37,10 @@ RUN apt-get -y update && \
 RUN pecl install xdebug-2.8.0 && \
     docker-php-ext-enable xdebug 
 
+# Install runkit
+RUN pecl install runkit7-4.0.0a2 && \
+    docker-php-ext-enable runkit7
+	
 # Install imagick
 RUN apt-get update && \
     apt-get -y --no-install-recommends install --fix-missing libmagickwand-dev && \
@@ -58,11 +63,13 @@ RUN mkdir -p /usr/local/ioncube
 COPY ioncube_loader_lin_7.4.so /usr/local/ioncube
 
 # Enable apache modules
+RUN a2enmod proxy_http
 RUN a2enmod rewrite headers
 RUN a2enmod dump_io
 
 # Copy in mail wrapper script
 COPY phpsendmail /usr/local/bin/phpsendmail
+COPY proxy.php /usr/local/bin/proxy.php
 RUN chmod +x /usr/local/bin/phpsendmail
 
 # Cleanup
