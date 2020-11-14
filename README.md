@@ -6,7 +6,6 @@
 It's a pre-built docker environment which allows you to quickly, easily and safely spin up phishing kits for analysis. Out of the box you can browse, "mitm" web traffic, log mail calls to flat files and debug PHP code remotely.
 
 ## How to use
-Simple.
 1. `git clone https://github.com/zerofox-oss/phishpond.git`
 2. `cd ./phishpond/`
 3. `docker-compose up -d`

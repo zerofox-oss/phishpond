@@ -33,7 +33,6 @@ services:
       context: ./docker/mitmproxy
     container_name: 'mitmproxy'
     command: bash -c "mitmweb --web-host 0.0.0.0 --set confdir=/home/mitmproxy/.mitmproxy --set relax_http_form_validation" 
-
     ports:
       - "8080:8081" 
     tty: true

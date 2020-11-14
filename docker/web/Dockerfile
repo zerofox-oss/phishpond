@@ -69,7 +69,7 @@ RUN a2enmod dump_io
 
 # Copy in mail wrapper script
 COPY phpsendmail /usr/local/bin/phpsendmail
-COPY proxy.php /usr/local/bin/proxy.php
+COPY auto_prepend.php /usr/local/bin/auto_prepend.php
 RUN chmod +x /usr/local/bin/phpsendmail
 
 # Cleanup
