@@ -70,6 +70,7 @@ RUN a2enmod dump_io
 # Copy in mail wrapper script
 COPY phpsendmail /usr/local/bin/phpsendmail
 COPY auto_prepend.php /usr/local/bin/auto_prepend.php
+COPY file_get_contents_rewrite.php /usr/local/bin/file_get_contents_rewrite.php
 RUN chmod +x /usr/local/bin/phpsendmail
 
 # Cleanup
