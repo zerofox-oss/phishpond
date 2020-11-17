@@ -34,12 +34,17 @@ RUN apt-get -y update && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Install xdebug
-RUN pecl install xdebug-2.8.0 && \
+RUN pecl install xdebug-2.9.8 && \
     docker-php-ext-enable xdebug 
 
-# Install runkit
-RUN pecl install runkit7-4.0.0a2 && \
-    docker-php-ext-enable runkit7
+## Install runkit
+#RUN pecl install runkit7-4.0.0a2 && \
+#    docker-php-ext-enable runkit7
+
+# Install uopz
+RUN pecl install uopz && \
+    docker-php-ext-enable uopz 
+
 	
 # Install imagick
 RUN apt-get update && \
@@ -69,8 +74,8 @@ RUN a2enmod dump_io
 
 # Copy in mail wrapper script
 COPY phpsendmail /usr/local/bin/phpsendmail
-COPY auto_prepend.php /usr/local/bin/auto_prepend.php
-COPY file_get_contents_rewrite.php /usr/local/bin/file_get_contents_rewrite.php
+COPY patch.php /usr/local/bin/patch.php
+COPY unpatch.php /usr/local/bin/unpatch.php
 RUN chmod +x /usr/local/bin/phpsendmail
 
 # Cleanup
