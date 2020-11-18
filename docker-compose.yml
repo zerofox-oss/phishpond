@@ -21,6 +21,8 @@ services:
       - ./www:/var/www/html
       - ./configs/web/vhosts:/etc/apache2/sites-enabled/
       - ./configs/php/php.ini:/usr/local/etc/php/php.ini
+      - ./configs/php/patch.php:/usr/local/bin/patch.php
+      - ./configs/php/unpatch.php:/usr/local/bin/unpatch.php
       - ./logs:/var/log/phishpond/
       - mitm-volume:/usr/local/share/ca-certificates/extra/
     command: >

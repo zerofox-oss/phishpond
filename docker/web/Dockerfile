@@ -74,8 +74,6 @@ RUN a2enmod dump_io
 
 # Copy in mail wrapper script
 COPY phpsendmail /usr/local/bin/phpsendmail
-COPY patch.php /usr/local/bin/patch.php
-COPY unpatch.php /usr/local/bin/unpatch.php
 RUN chmod +x /usr/local/bin/phpsendmail
 
 # Cleanup
