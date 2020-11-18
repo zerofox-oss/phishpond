@@ -1,10 +1,8 @@
 <?php
-    uopz_set_return('file_get_contents', function($filename, $use_include_path = FALSE, $resource = NULL, $offset = 0, $maxlen = 0) {
-	echo "Number of arguments: " . func_num_args() . "\n";
-	$arg_list = func_get_args();
-	for ($i = 0; $i < func_num_args(); $i++) {
-	    echo "Argument $i is: " . $arg_list[$i] . "\n";
-	}
+    uopz_set_return('stream_context_create', function(array $options) {
+        $array = func_get_args();
+        $array[0]["http"]['proxy']='mitmproxy:8080';
+        return stream_context_create($array[0]);
     }, 1);
 ?>
 
