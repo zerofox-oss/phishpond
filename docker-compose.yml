@@ -34,12 +34,21 @@ services:
     build:
       context: ./docker/mitmproxy
     container_name: 'mitmproxy'
-    command: bash -c "mitmweb --web-host 0.0.0.0 --set confdir=/home/mitmproxy/.mitmproxy --set relax_http_form_validation" 
+    command: bash -c "mitmweb --web-host 0.0.0.0 --set confdir=/home/mitmproxy/.mitmproxy" 
     ports:
-      - "8080:8081" 
+      - "8081:8081" 
     tty: true
     volumes:
       - mitm-volume:/home/mitmproxy/.mitmproxy/
       - ./configs/mitmproxy/config.yaml:/home/mitmproxy/.mitmproxy/config.yaml
+  frontend:
+    build:
+      context: ./frontend
+    container_name: 'frontend'
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./frontend/:/app
+
 volumes:
   mitm-volume:
