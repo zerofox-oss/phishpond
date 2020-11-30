@@ -1,18 +1,22 @@
 <template>
-  <div class="hero-head">
-    <nav class="navbar">
-      <div class="container">
+<!--  <div class="hero-head"> -->
+  <nav role="navigation" class="navbar is-fixed-top is-dark">
         <div class="navbar-brand">
-          <a class="navbar-item" >Phishpond</a>
+          <a href="/" class="navbar-item router-link-exact-active router-link-active"
+          ><img src="https://i.imgur.com/8ZbVsyK.png" style="max-height: 48px;"/></a>
         </div>
-        <div class="navbar-end">
-            <router-link class="navbar-item" to="/home">
-              Home
-            </router-link>
+        <div class="navbar-menu">
+          <div class="navbar-start">
+            <p class="navbar-item subtitle" >Phishpond</p>
+          </div>
+          <div class="navbar-end">
+              <router-link class="navbar-item" to="/home">
+                Home
+              </router-link>
+          </div>
         </div>
-      </div>
     </nav>
-  </div>
+<!--  </div>-->
 </template>
 
 <script>

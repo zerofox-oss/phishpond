@@ -1,11 +1,13 @@
 <template>
   <div id="app">
-    <section class="hero is-primary is-info">
       <navbar />
-    </section>
-    <section class="hero-body">
-        <router-view/>
-    </section>
+      <section class="hero">
+        <div class="hero-body">
+          <div class="container">
+            <router-view/>
+          </div>
+        </div>
+      </section>
   </div>
 </template>
 
@@ -28,5 +30,8 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+body{
+  padding-top: 0px!important;
 }
 </style>
