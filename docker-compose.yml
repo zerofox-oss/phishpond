@@ -48,7 +48,8 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./frontend/:/app
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
 
 volumes:
   mitm-volume:
