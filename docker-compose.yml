@@ -30,6 +30,7 @@ services:
       update-ca-certificates --verbose && 
       chmod -R 777 /var/log/phishpond &&
       apache2-foreground"
+
   mitmproxy:
     build:
       context: ./docker/mitmproxy
@@ -41,6 +42,7 @@ services:
     volumes:
       - mitm-volume:/home/mitmproxy/.mitmproxy/
       - ./configs/mitmproxy/config.yaml:/home/mitmproxy/.mitmproxy/config.yaml
+
   frontend:
     build:
       context: ./frontend
@@ -50,6 +52,16 @@ services:
     volumes:
       - ./frontend/src:/app/src
       - ./frontend/public:/app/public
+
+  backend:
+    build:
+      context: ./backend
+    container_name: 'backend'
+    command: bash -c "uvicorn api:app --reload --host 0.0.0.0 --port 5000"
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend/api:/backend/api 
 
 volumes:
   mitm-volume:
