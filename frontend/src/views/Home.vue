@@ -45,39 +45,47 @@
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-                phishKitFile: {}
-            }
-        },
-        methods: {
-          analyze() {
-            if (!this.phishKitFile.name) {
-              this.$buefy.toast.open({
-                duration: 5000,
-                message: `No file selected! Please try again`,
-                position: 'is-bottom',
-                type: 'is-danger'
-              })
-              return
-            }
-            if (this.phishKitFile.type !== 'application/zip') {
-              this.$buefy.toast.open({
-                duration: 5000,
-                message: `Submit .zip files only! Please try again`,
-                position: 'is-bottom',
-                type: 'is-danger'
-              })
-              return
-            }
-          /*  const loadingComponent = this.$buefy.loading.open({
-              container: this.$el.firstElementChild,
-            })
-            loadingComponent.close()*/
+  import api from '@/services/api'
+  export default {
+      data() {
+          return {
+              phishKitFile: {}
           }
+      },
+      methods: {
+        analyze() {
+          if (!this.phishKitFile.name) {
+            this.$buefy.toast.open({
+              duration: 5000,
+              message: `No file selected! Please try again`,
+              position: 'is-bottom',
+              type: 'is-danger'
+            })
+
+            return
+          }
+          if (this.phishKitFile.type !== 'application/zip') {
+            this.$buefy.toast.open({
+              duration: 5000,
+              message: `Submit .zip files only! Please try again`,
+              position: 'is-bottom',
+              type: 'is-danger'
+            })
+            return
+          }
+          var data = new FormData();
+          data.append('file', this.phishKitFile)
+          api.post(
+            '/analyze',
+            data);
+
+        /*  const loadingComponent = this.$buefy.loading.open({
+            container: this.$el.firstElementChild,
+          })
+          loadingComponent.close()*/
         }
-    }
+      }
+  }
 </script>
 
 <style scoped>

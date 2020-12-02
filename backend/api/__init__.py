@@ -47,7 +47,7 @@ def string_finder(filebytes):
             for path in paths:
                 if path.endswith('.php'):
                     with z.open(path, "r") as f:
-                        text = f.read().lower().decode('utf-8')
+                        text = f.read().lower().decode('utf-8', 'ignore')
 
                     um = tuple(m.group(0) for m in re.finditer(urlRegex, text) if m.group(0))
                     em = tuple(m.group(0) for m in re.finditer(emailRegex, text) if m.group(0))
@@ -56,17 +56,17 @@ def string_finder(filebytes):
                         urls.append(u)
                     for e in em:
                         emails.append(e)
- 
-    os.remove("test.zip")
+
+    os.remove('test.zip')
 
     strings_out = {
         "urls": set(urls),
         "emails": set(emails)
     }
-    
+
     return strings_out
 
-@app.post("/analyze")
+@app.post("/api/analyze")
 async def analyze(file: bytes = File(...)):
     hashes = hash_file(file)
     strings = string_finder(file)
@@ -77,7 +77,3 @@ async def analyze(file: bytes = File(...)):
         "strings": strings
     }
     return out
-
-
-# if __name__ == '__main__':
-#     uvicorn.run(app, host='0.0.0.0', port=5000) # local debugging
