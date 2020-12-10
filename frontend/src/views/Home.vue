@@ -14,7 +14,9 @@
               <p>
                 <b-icon icon="upload" size="is-large"> </b-icon>
               </p>
-              <p>Drop the phishkit as a .zip here or click to upload</p>
+              <code>
+                <p>Drop the phishkit as a .zip here or click to upload</p>
+              </code>
             </div>
           </section>
         </b-upload>
@@ -38,24 +40,111 @@
     </div>
     <div class="box" v-if="this.didAnalysis">
       <h1 class="title">{{ "Phish Kit Analysis: " + phishKitFile.name }}</h1>
-      <div class="card">
-        <div class="card-content">
-          <div class="media">
-            <div class="media-left">
-              <figure class="image is-48x48">
-                <b-icon icon="hashtag" />
-              </figure>
-            </div>
-            <div class="media-content">
-              <p class="title is-4">File Hashes</p>
+      <div class="tile is-ancestor">
+        <div class="tile is-6">
+          <div class="card">
+            <div class="card-content">
+              <div class="media">
+                <div class="media-left">
+                  <figure class="image is-48x48">
+                    <b-icon icon="hashtag" />
+                  </figure>
+                </div>
+                <div class="media-content">
+                  <p class="title is-4">Zip File Hashes</p>
+                </div>
+              </div>
+              <div class="content">
+                <li
+                  v-for="(value, key) in this.analysis.hashes"
+                  v-bind:key="key"
+                >
+                  <b>{{ key }}</b
+                  >: {{ value }}
+                </li>
+                <br />
+              </div>
             </div>
           </div>
-
+        </div>
+        <div class="tile is-6">
+          <div class="card">
+            <div class="card-content">
+              <div class="media">
+                <div class="media-left">
+                  <figure class="image is-48x48">
+                    <b-icon icon="info-circle" />
+                  </figure>
+                </div>
+                <div class="media-content">
+                  <p class="title is-4">Metadata</p>
+                </div>
+              </div>
+              <div class="content">
+                <div class="columns is-mobile is-multiline is-centered">
+                  <div class="column is-narrow">
+                    <div>
+                      <p class="heading">Embedded URLs Found</p>
+                      <p class="title">
+                        {{ this.analysis.strings.urls.length }}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="column is-narrow">
+                    <div>
+                      <p class="heading">Embedded Emails found</p>
+                      <p class="title">
+                        {{ this.analysis.strings.emails.length }}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="column is-narrow">
+                    <div>
+                      <p class="heading">Size of Zip file</p>
+                      <p class="title">
+                        {{
+                          Math.floor(
+                            (this.analysis.file_size / Math.pow(1024, 2)) * 100
+                          ) / 100
+                        }}
+                        MB
+                      </p>
+                    </div>
+                  </div>
+                  <div class="column is-narrow">
+                    <div>
+                      <p class="heading">Total Files in Kit</p>
+                      <p class="title">
+                        {{ this.analysis.strings.total_files }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <br />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tile">
+        <div class="tile is-child card">
+          <div class="card-content">
+            <div class="media">
+              <div class="media-left">
+                <figure class="image is-48x48">
+                  <b-icon icon="file-code" />
+                </figure>
+              </div>
+              <div class="media-content">
+                <p class="title is-4">File Tree</p>
+              </div>
+              <br />
+            </div>
+          </div>
           <div class="content">
-            <li v-for="(value, key) in this.analysis.hashes" v-bind:key="key">
-              {{ key }}: {{ value }}
-            </li>
-            <br />
+            <!-- <pre> <code>
+            </code> </pre> -->
+            <p style="text-align: left" v-html="this.analysis.strings.tree" />
           </div>
         </div>
       </div>
@@ -120,6 +209,7 @@ export default {
           });
           this.analysis = response.data;
           this.didAnalysis = true;
+          console.log(this.analysis);
           loadingComponent.close();
         });
     },
@@ -131,5 +221,15 @@ export default {
 .upload-form {
   margin-top: 20px;
   margin-bottom: 20px;
+}
+li {
+  text-align: left;
+}
+p {
+  white-space: pre;
+}
+pre {
+  text-align: left;
+  /* white-space: pre-line; */
 }
 </style>
