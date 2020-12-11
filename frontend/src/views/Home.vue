@@ -142,9 +142,11 @@
             </div>
           </div>
           <div class="content">
-            <!-- <pre> <code>
-            </code> </pre> -->
-            <p style="text-align: left" v-html="this.analysis.strings.tree" />
+            <highlightjs
+              language="shell"
+              :code="this.analysis.strings.tree"
+            >
+            </highlightjs>
           </div>
         </div>
       </div>
@@ -154,6 +156,7 @@
 
 <script>
 import api from "@/services/api";
+import hljs from 'highlight.js'
 export default {
   data() {
     return {
@@ -161,6 +164,9 @@ export default {
       analysis: {},
       didAnalysis: false,
     };
+  },
+  mounted() {
+    hljs.initHighlightingOnLoad();
   },
   methods: {
     analyze() {
@@ -186,7 +192,6 @@ export default {
       const loadingComponent = this.$buefy.loading.open({
         container: this.$el.firstElementChild,
       });
-      loadingComponent.close();
       var data = new FormData();
       data.append("file", this.phishKitFile);
       api
@@ -225,11 +230,8 @@ export default {
 li {
   text-align: left;
 }
-p {
-  white-space: pre;
-}
 pre {
   text-align: left;
-  /* white-space: pre-line; */
+  white-space: pre;
 }
 </style>

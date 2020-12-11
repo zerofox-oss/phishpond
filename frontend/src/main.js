@@ -3,11 +3,15 @@ import App from './App.vue'
 import router from './router'
 import "@fortawesome/fontawesome-free/css/all.css";
 import "@fortawesome/fontawesome-free/js/all.js";
+import "highlight.js/styles/darcula.css"
+
+import hljs from 'highlight.js'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 Vue.config.productionTip = false
 
-/* 
+
+/*
  * Setup Buefy
  */
 
@@ -15,6 +19,7 @@ import Buefy from 'buefy'
 import 'buefy/dist/buefy.css'
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.use(hljs.vuePlugin);
 Vue.use(Buefy, {
   defaultIconComponent: 'font-awesome-icon',
   defaultIconPack: 'fas',
