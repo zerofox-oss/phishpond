@@ -9,6 +9,9 @@ node_modules
 *.swp
 .vscode
 
+# phish kit files :) 
+*.zip
+
 # runtime env configuration
 .env
 newrelic.js

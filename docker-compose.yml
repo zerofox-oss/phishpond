@@ -2,7 +2,7 @@ version: "3"
 
 services:
   webserver:
-    build: 
+    build:
       context: ./docker/web
     depends_on:
       - mitmproxy
@@ -17,7 +17,7 @@ services:
       - XDEBUG_CONFIG="remote_host=localhost remote_port=9000 remote_enable=1"
     links:
       - mitmproxy
-    volumes: 
+    volumes:
       - ./www:/var/www/html
       - ./configs/web/vhosts:/etc/apache2/sites-enabled/
       - ./configs/php/php.ini:/usr/local/etc/php/php.ini
@@ -27,19 +27,45 @@ services:
       - mitm-volume:/usr/local/share/ca-certificates/extra/
     command: >
       bash -c "cp /usr/local/share/ca-certificates/extra/mitmproxy-ca-cert.{pem,crt} &&
-      update-ca-certificates --verbose && 
+      update-ca-certificates --verbose &&
       chmod -R 777 /var/log/phishpond &&
       apache2-foreground"
+
   mitmproxy:
     build:
       context: ./docker/mitmproxy
     container_name: 'mitmproxy'
-    command: bash -c "mitmweb --web-host 0.0.0.0 --set confdir=/home/mitmproxy/.mitmproxy --set relax_http_form_validation" 
+    command: bash -c "mitmweb --web-host 0.0.0.0 --set confdir=/home/mitmproxy/.mitmproxy"
     ports:
-      - "8080:8081" 
+      - "8081:8081"
     tty: true
     volumes:
       - mitm-volume:/home/mitmproxy/.mitmproxy/
       - ./configs/mitmproxy/config.yaml:/home/mitmproxy/.mitmproxy/config.yaml
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: 'frontend'
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+    links:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+    container_name: 'backend'
+    stdin_open: true # allow us to drop into ipdb
+    tty: true
+    command: bash -c "uvicorn api:app --reload --host 0.0.0.0 --port 5000"
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend/api:/backend/api
+
 volumes:
   mitm-volume:
