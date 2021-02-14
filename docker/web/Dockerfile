@@ -71,6 +71,7 @@ COPY ioncube_loader_lin_7.4.so /usr/local/ioncube
 RUN a2enmod proxy_http
 RUN a2enmod rewrite headers
 RUN a2enmod dump_io
+RUN a2enmod ssl
 
 # Copy in mail wrapper script
 COPY phpsendmail /usr/local/bin/phpsendmail

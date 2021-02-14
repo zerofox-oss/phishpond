@@ -1,12 +1,14 @@
 version: "3"
 
 services:
+
   webserver:
     build: 
       context: ./docker/web
     depends_on:
       - mitmproxy
     container_name: 'webserver'
+    hostname: 'phishpond.local'
     restart: 'always'
     ports:
       - "80:80"
@@ -30,6 +32,7 @@ services:
       update-ca-certificates --verbose && 
       chmod -R 777 /var/log/phishpond &&
       apache2-foreground"
+
   mitmproxy:
     build:
       context: ./docker/mitmproxy
@@ -41,5 +44,23 @@ services:
     volumes:
       - mitm-volume:/home/mitmproxy/.mitmproxy/
       - ./configs/mitmproxy/config.yaml:/home/mitmproxy/.mitmproxy/config.yaml
+
+  browser:
+    build: 
+      context: https://github.com/jlesage/docker-firefox.git
+      shm_size: '2gb'
+    ports:
+      - "5800:5800"
+    container_name: 'firefox'
+    volumes:
+      - browser-volume:/config:rw
+    links:
+      - mitmproxy
+      - webserver
+    environment:
+      - http_proxy=http://mitmproxy:8080
+      - HTTPS_PROXY=http://mitmproxy:8080
+
 volumes:
   mitm-volume:
+  browser-volume:
