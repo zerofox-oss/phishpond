@@ -12,10 +12,11 @@ It's a pre-built docker environment which allows you to quickly, easily and safe
 4. Browse to `http://localhost:5800`
 5. Browse to `http://localhost:8080` for mitmproxy
 6. Within the virtual browser navigate to `http://phishpond.local`
+
 (First time setup)
 7. Navigate to `mitm.it`
 8. Download the certificate for linux
 9. Import the cert to the virtual browser
-10. Open preferences
-11. Search `proxy`
-12. Set the proxy for http/s to: `mitmproxy` with port `8080`
+10.  Open preferences
+11.  Search `proxy`
+12.  Set the proxy for http/s to: `mitmproxy` with port `8080`
