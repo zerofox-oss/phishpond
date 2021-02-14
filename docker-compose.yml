@@ -10,9 +10,6 @@ services:
     container_name: 'webserver'
     hostname: 'phishpond.local'
     restart: 'always'
-    ports:
-      - "80:80"
-      - "443:443"
     environment:
       - http_proxy=http://mitmproxy:8080
       - HTTPS_PROXY=http://mitmproxy:8080
@@ -37,7 +34,7 @@ services:
     build:
       context: ./docker/mitmproxy
     container_name: 'mitmproxy'
-    command: bash -c "mitmweb --web-host 0.0.0.0 --set confdir=/home/mitmproxy/.mitmproxy --set relax_http_form_validation" 
+    command: bash -c "mitmweb --web-host 0.0.0.0 --set confdir=/home/mitmproxy/.mitmproxy --set relax_http_form_validation --ignore-hosts '(mozilla\.com|mozilla\.net|detectportal\.firefox\.com)'" 
     ports:
       - "8080:8081" 
     tty: true
@@ -54,12 +51,21 @@ services:
     container_name: 'firefox'
     volumes:
       - browser-volume:/config:rw
+      - mitm-volume:/config/certs/
+    depends_on:
+      - mitmproxy
     links:
       - mitmproxy
       - webserver
     environment:
-      - http_proxy=http://mitmproxy:8080
-      - HTTPS_PROXY=http://mitmproxy:8080
+      - FF_PREF_PROXY_TYPE=network.proxy.type=1
+      - FF_PREF_HTTP_PROXY=network.proxy.http=\"mitmproxy\"
+      - FF_PREF_HTTP_PROXY_PORT=network.proxy.http_port=8080
+      - FF_PREF_HTTPS_PROXY=network.proxy.ssl=\"mitmproxy\"
+      - FF_PREF_HTTPS_PROXY_PORT=network.proxy.ssl_port=8080
+      - FF_PREF_CAPTIVE_PORTAL=network.captive-portal-service.enabled=false
+      - DISPLAY_WIDTH=1920
+      - DISPLAY_HEIGHT=1080
 
 volumes:
   mitm-volume:
