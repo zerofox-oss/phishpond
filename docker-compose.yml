@@ -1,16 +1,15 @@
 version: "3"
 
 services:
+
   webserver:
     build: 
       context: ./docker/web
     depends_on:
       - mitmproxy
     container_name: 'webserver'
+    hostname: 'phishpond.local'
     restart: 'always'
-    ports:
-      - "80:80"
-      - "443:443"
     environment:
       - http_proxy=http://mitmproxy:8080
       - HTTPS_PROXY=http://mitmproxy:8080
@@ -30,16 +29,44 @@ services:
       update-ca-certificates --verbose && 
       chmod -R 777 /var/log/phishpond &&
       apache2-foreground"
+
   mitmproxy:
     build:
       context: ./docker/mitmproxy
     container_name: 'mitmproxy'
-    command: bash -c "mitmweb --web-host 0.0.0.0 --set confdir=/home/mitmproxy/.mitmproxy --set relax_http_form_validation" 
+    command: bash -c "mitmweb --web-host 0.0.0.0 --set confdir=/home/mitmproxy/.mitmproxy --set relax_http_form_validation --ignore-hosts '(mozilla\.com|mozilla\.net|detectportal\.firefox\.com)'" 
     ports:
       - "8080:8081" 
     tty: true
     volumes:
       - mitm-volume:/home/mitmproxy/.mitmproxy/
       - ./configs/mitmproxy/config.yaml:/home/mitmproxy/.mitmproxy/config.yaml
+
+  browser:
+    build: 
+      context: https://github.com/jlesage/docker-firefox.git
+      shm_size: '2gb'
+    ports:
+      - "5800:5800"
+    container_name: 'firefox'
+    volumes:
+      - browser-volume:/config:rw
+      - mitm-volume:/config/certs/
+    depends_on:
+      - mitmproxy
+    links:
+      - mitmproxy
+      - webserver
+    environment:
+      - FF_PREF_PROXY_TYPE=network.proxy.type=1
+      - FF_PREF_HTTP_PROXY=network.proxy.http=\"mitmproxy\"
+      - FF_PREF_HTTP_PROXY_PORT=network.proxy.http_port=8080
+      - FF_PREF_HTTPS_PROXY=network.proxy.ssl=\"mitmproxy\"
+      - FF_PREF_HTTPS_PROXY_PORT=network.proxy.ssl_port=8080
+      - FF_PREF_CAPTIVE_PORTAL=network.captive-portal-service.enabled=false
+      - DISPLAY_WIDTH=1920
+      - DISPLAY_HEIGHT=1080
+
 volumes:
   mitm-volume:
+  browser-volume:
