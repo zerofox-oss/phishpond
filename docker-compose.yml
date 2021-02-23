@@ -34,6 +34,7 @@ services:
     build:
       context: ./docker/mitmproxy
     container_name: 'mitmproxy'
+    restart: 'always'
     command: bash -c "mitmweb --web-host 0.0.0.0 --set confdir=/home/mitmproxy/.mitmproxy --set relax_http_form_validation --ignore-hosts '(mozilla\.com|mozilla\.net|detectportal\.firefox\.com)'" 
     ports:
       - "8080:8081" 
