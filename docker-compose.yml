@@ -1,9 +1,8 @@
 version: "3"
 
 services:
-
   webserver:
-    build: 
+    build:
       context: ./docker/web
     depends_on:
       - mitmproxy
@@ -16,7 +15,8 @@ services:
       - XDEBUG_CONFIG="remote_host=localhost remote_port=9000 remote_enable=1"
     links:
       - mitmproxy
-    volumes: 
+      - db
+    volumes:
       - ./www:/var/www/html
       - ./configs/web/vhosts:/etc/apache2/sites-enabled/
       - ./configs/php/php.ini:/usr/local/etc/php/php.ini
@@ -35,16 +35,16 @@ services:
       context: ./docker/mitmproxy
     container_name: 'mitmproxy'
     restart: 'always'
-    command: bash -c "mitmweb --web-host 0.0.0.0 --set confdir=/home/mitmproxy/.mitmproxy --set relax_http_form_validation --ignore-hosts '(mozilla\.com|mozilla\.net|detectportal\.firefox\.com)'" 
+    command: bash -c "mitmweb --web-host 0.0.0.0 --set confdir=/home/mitmproxy/.mitmproxy --set relax_http_form_validation --ignore-hosts '(mozilla\.com|mozilla\.net|detectportal\.firefox\.com)'"
     ports:
-      - "8080:8081" 
+      - "8080:8081"
     tty: true
     volumes:
       - mitm-volume:/home/mitmproxy/.mitmproxy/
       - ./configs/mitmproxy/config.yaml:/home/mitmproxy/.mitmproxy/config.yaml
 
   browser:
-    build: 
+    build:
       context: https://github.com/jlesage/docker-firefox.git
       shm_size: '2gb'
     ports:
@@ -65,9 +65,22 @@ services:
       - FF_PREF_HTTPS_PROXY=network.proxy.ssl=\"mitmproxy\"
       - FF_PREF_HTTPS_PROXY_PORT=network.proxy.ssl_port=8080
       - FF_PREF_CAPTIVE_PORTAL=network.captive-portal-service.enabled=false
-      - DISPLAY_WIDTH=1920
-      - DISPLAY_HEIGHT=1080
+      - DISPLAY_WIDTH=1280
+      - DISPLAY_HEIGHT=768
+
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    container_name: 'db'
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: phishpond_db
+      MYSQL_USER: phishpond
+      MYSQL_PASSWORD: password
 
 volumes:
   mitm-volume:
   browser-volume:
+  db_data:
