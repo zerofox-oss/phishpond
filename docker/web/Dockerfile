@@ -67,11 +67,16 @@ RUN docker-php-ext-install pdo_mysql && \
 RUN mkdir -p /usr/local/ioncube
 COPY ioncube_loader_lin_7.4.so /usr/local/ioncube
 
+# Generate cert
+RUN mkdir -p /etc/apache2/ssl/
+RUN openssl req -new -newkey rsa:4096 -days 3650 -nodes -x509 -subj "/C=US/ST=./L=./O=./CN=phishpond.local" -keyout /etc/apache2/ssl/ssl.key -out /etc/apache2/ssl/ssl.crt
+
 # Enable apache modules
 RUN a2enmod proxy_http
 RUN a2enmod rewrite headers
 RUN a2enmod dump_io
 RUN a2enmod ssl
+
 
 # Copy in mail wrapper script
 COPY phpsendmail /usr/local/bin/phpsendmail

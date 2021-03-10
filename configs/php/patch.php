@@ -1,4 +1,5 @@
 <?php
+    ob_start();
     // Set default stream context if none specified
     $default_opts = array(
       'http'=>array(
