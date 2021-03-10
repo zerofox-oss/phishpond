@@ -5,6 +5,13 @@
 ## What is phishpond?
 It's a pre-built docker environment which allows you to quickly, easily and safely spin up phishing kits for analysis. Out of the box you can browse, "mitm" web traffic, log mail calls to flat files and debug PHP code remotely.
 
+## CLI instructions
+Install requirements.
+1. `python phishpond.py -vv setup`
+2. `python phishpond.py -vv run`
+3. Select additional modules required
+4. Go!
+
 ## How to use
 1. `git clone https://github.com/zerofox-oss/phishpond.git`
 2. `cd ./phishpond/`
