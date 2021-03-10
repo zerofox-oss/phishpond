@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.imgur.com/rA2SUEg.png">
+  <img src="https://i.imgur.com/ElaxFKN.png">
 </p>
 
 ## What is phishpond?
@@ -8,10 +8,11 @@ It's a pre-built docker environment which allows you to quickly, easily and safe
 ## How to use
 1. `git clone https://github.com/zerofox-oss/phishpond.git`
 2. `cd ./phishpond/`
-3. `docker-compose up -d`
-4. Browse to `http://localhost:5800`
-5. Browse to `http://localhost:8080` for mitmproxy
-6. Within the virtual browser navigate to `http://phishpond.local`
+3. Configure any db connection strings within `docker-compose.yml`
+4. `docker-compose up -d`
+5. Browse to `http://localhost:5800` for the virtual browser
+6. Browse to `http://localhost:8080` for mitmproxy
+7. Within the virtual browser navigate to `http://phishpond.local`
 
 (First time setup)
 1. Open preferences within the virtual browser
