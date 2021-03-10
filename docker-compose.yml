@@ -29,6 +29,10 @@ services:
       update-ca-certificates --verbose && 
       chmod -R 777 /var/log/phishpond &&
       apache2-foreground"
+    networks:
+      phishpond_network:
+        aliases:
+          - phishpond.local
 
   mitmproxy:
     build:
@@ -41,6 +45,8 @@ services:
     volumes:
       - mitm-volume:/home/mitmproxy/.mitmproxy/
       - ./configs/mitmproxy/config.yaml:/home/mitmproxy/.mitmproxy/config.yaml
+    networks:
+      - phishpond_network
 
   browser:
     build: 
@@ -57,6 +63,8 @@ services:
     links:
       - mitmproxy
       - webserver
+    networks:
+      - phishpond_network
     environment:
       - FF_PREF_PROXY_TYPE=network.proxy.type=1
       - FF_PREF_HTTP_PROXY=network.proxy.http=\"mitmproxy\"
@@ -70,3 +78,6 @@ services:
 volumes:
   mitm-volume:
   browser-volume:
+
+networks:
+  phishpond_network:
