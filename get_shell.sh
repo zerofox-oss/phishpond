@@ -13,4 +13,4 @@ while getopts ":h" option; do
          exit;;
    esac
 done
-docker exec -t -i `docker ps | grep "$1" | cut -d " " -f 1` sh
+docker exec -e 'TERM=xterm-256color' -t -i `docker ps | grep "$1" | cut -d " " -f 1` /bin/bash

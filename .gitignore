@@ -15,6 +15,8 @@ newrelic.js
 newrelic.ini
 newrelic_agent.log
 
+www/kits/**
+
 # CI
 reports
 coverage/
