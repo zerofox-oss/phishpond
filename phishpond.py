@@ -19,7 +19,7 @@ logger.addHandler(console_handler)
 
 def setup_args():
     parser = argparse.ArgumentParser(
-        description="༼ つ ◕_◕ ༽つ [naughty telegram bots]", prog="phishpond.py"
+        description="༼ つ ◕_◕ ༽つ [let me see the phish]", prog="phishpond.py"
     )
     parser.add_argument(
         "-v",
