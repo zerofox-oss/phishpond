@@ -1,29 +1,40 @@
 from rich import print
-from .build import setup, kill
 from .menus import Menus as menus
-from .runner import run, status
-from .configs import Configs
-from .client import attach
+from .runner import start_stop, print_status
+from .client import attach, setup, configure
+import argparse
+
+def setup_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--setup',
+        help='Perform setup or rebuild operations',
+        action="store_true",
+        required=False)
+    return parser
 
 
 def main():
+    p = setup_args()
+    args = p.parse_args()
+
+    if args.setup:
+        setup()
+        return
+
     try:
         print(menus.banner)
         while True:
             result = menus.launcher()
 
-            if result == "Initial Setup":
-                setup()
-            if result == "Run":
-                run()
-            if result == "Stop":
-                kill()
-            # if result == "Attach":
-            #     attach()
+            if result == "Start/Stop":
+                start_stop()
+            if result == "Attach":
+                attach()
             if result == "Configure":
-                Configs.configure()
+                configure()
             if result == "Status":
-                status()
+                print_status()
             if result == "Exit":
                 return
     except KeyboardInterrupt:

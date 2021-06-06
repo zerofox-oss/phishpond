@@ -1,8 +1,5 @@
 import os
 import configparser
-from bullet import Bullet, Check, Input
-from .menus import Menus
-
 
 cfg = configparser.ConfigParser()
 
@@ -17,43 +14,23 @@ class Configs:
     cfg.read(os.path.join(os.path.dirname(__file__), "config.ini"))
 
     @classmethod
-    def configure(cls):
-        # get section
-        cli = Bullet(
-            prompt="Select a section\n",
-            choices=[*cfg.sections(), "Exit"]
-        )
-        s_selection = cli.launch()
-        Menus.delete_line(len(cfg.sections()) + 3)
-        if s_selection == "Exit":
-            return
+    def validate_mounts(cls):
+        valid = True
+        mounts = list(cfg["MOUNTS"])
+        for mount in mounts:
+            setting = cfg["MOUNTS"][mount]
+            if not os.path.exists(setting):
+                valid = False
+                print(f"[{mount}] - Invalid path!")
 
-        # get setting
-        cli = Bullet(
-            prompt="Select a setting to edit\n",
-            choices=[*list(cfg[s_selection]), "Exit"]
-        )
-        k_selection = cli.launch()
-        Menus.delete_line(len(list(cfg[s_selection])) + 3)
-        if k_selection == "Exit":
-            return
-
-        cli = Input(
-            prompt="Current value: " + cfg[s_selection][k_selection] + "\nEnter a new value:",
-            strip=True
-        )
-        v = cli.launch()
-        cfg.set(s_selection, k_selection, v)
-        with open(os.path.join(os.path.dirname(__file__), "config.ini"), "w") as ini:
-            cfg.write(ini)
+        return valid
 
     mitmproxy = {
         "name": "pp_mitmproxy",
-        "tty": True,
-        "stdin_open": True,
         "network": "phishpond_network",
         "detach": True,
-        "auto_remove": True,
+        "remove": True,
+        # "auto_remove": True,
         "ports": {8081: 8080},
         "volumes": {
             "pp-mitm-volume": {
@@ -70,19 +47,21 @@ class Configs:
 
     webserver = {
         "name": "pp_webserver",
-        "tty": True,
-        "stdin_open": True,
         "network": "phishpond_network",
         "hostname": "phishpond.local",
         "detach": True,
-        "auto_remove": True,
+        "remove": True,
+        # "auto_remove": True,
         "ports": {80: 80, 443: 443},
         "volumes": {
             "pp-mitm-volume": {
                 "bind": "/usr/local/share/ca-certificates/extra/",
                 "mode": "rw",
             },
-            cfg["MOUNTS"]["www"]: {"bind": "/var/www/html", "mode": "rw"},
+            cfg["MOUNTS"]["www"]: {
+                "bind": "/var/www/html",
+                "mode": "rw"
+            },
             f"{config_path}/web/vhosts": {
                 "bind": "/etc/apache2/sites-enabled/",
                 "mode": "rw",
@@ -111,35 +90,52 @@ class Configs:
         ],
     }
 
-    db = {
-        "name": "pp_db",
-        "tty": True,
-        "stdin_open": True,
+    mysql_db = {
+        "name": "pp_mysql_db",
         "network": "phishpond_network",
         "detach": True,
-        "auto_remove": True,
+        "remove": True,
+        # "auto_remove": True,
         "volumes": {
-            "pp-db-data": {
+            "pp-mysql-db-data": {
                 "bind": "/var/lib/mysql",
                 "mode": "rw",
             }
         },
         "environment": [
-            f'MYSQL_ROOT_PASSWORD={cfg["MYSQL"]["MYSQL_ROOT_PASSWORD"]}',
-            f'MYSQL_DATABASE={cfg["MYSQL"]["MYSQL_DATABASE"]}',
-            f'MYSQL_USER={cfg["MYSQL"]["MYSQL_USER"]}',
-            f'MYSQL_PASSWORD={cfg["MYSQL"]["MYSQL_PASSWORD"]}',
+            f'MYSQL_ROOT_PASSWORD={cfg["MYSQL"]["mysql_root_password"]}',
+            f'MYSQL_DATABASE={cfg["MYSQL"]["mysql_database"]}',
+            f'MYSQL_USER={cfg["MYSQL"]["mysql_user"]}',
+            f'MYSQL_PASSWORD={cfg["MYSQL"]["mysql_password"]}',
+        ],
+    }
+
+    postgres_db = {
+        "name": "pp_postgres_db",
+        "network": "phishpond_network",
+        "detach": True,
+        "remove": True,
+        # "auto_remove": True,
+        "volumes": {
+            "pp-postgres-db-data": {
+                "bind": "/var/lib/postgresql/data",
+                "mode": "rw",
+            }
+        },
+        "environment": [
+            f'POSTGRES_DB={cfg["POSTGRES"]["postgres_database"]}',
+            f'POSTGRES_USER={cfg["POSTGRES"]["postgres_user"]}',
+            f'POSTGRES_PASSWORD={cfg["POSTGRES"]["postgres_password"]}',
         ],
     }
 
     browser = {
         "name": "pp_browser",
-        "tty": True,
-        "stdin_open": True,
         "network": "phishpond_network",
         "ports": {5800: 5800},
         "detach": True,
-        "auto_remove": True,
+        "remove": True,
+        # "auto_remove": True,
         "volumes": {
             "pp-browser-data": {
                 "bind": "/config",
