@@ -1,5 +1,5 @@
 [flake8]
-ignore = E226,E302,E41
-max-line-length = 88
-exclude = tests/*
+ignore = E226,E302,E41,W605,C901
+max-line-length = 256
+exclude = tests/*,.venv/*, .vscode/*
 max-complexity = 10
