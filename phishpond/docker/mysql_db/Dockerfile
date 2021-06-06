@@ -5,3 +5,5 @@ ENV MYSQL_ROOT_PASSWORD=rootpassword
 ENV MYSQL_DATABASE=phishpond_db
 ENV MYSQL_USER=phishpond
 ENV MYSQL_PASSWORD=password
+
+COPY .bashrc /root/.bashrc
