@@ -7,40 +7,38 @@ Usage:
 
     mitmproxy -s block-telegram.py
 """
-from mitmproxy import ctx, http, log
-from mitmproxy.addons import termlog
+from mitmproxy import http
 import json
+
 
 class BlockTelegram:
     def __init__(self):
-        self.outfile = '/home/mitmproxy/logs/telegram.log'
+        self.outfile = "/home/mitmproxy/logs/telegram.log"
 
     def load(self, loader):
         loader.add_option(
-            name = "block_telegram",
-            typespec = bool,
-            default = True,
-            help = "Block and log outgoing Telegram API calls",
+            name="block_telegram",
+            typespec=bool,
+            default=True,
+            help="Block and log outgoing Telegram API calls",
         )
 
     def response(self, flow):
-        telegram_api_domain = 'api.telegram.org'
+        telegram_api_domain = "api.telegram.org"
         if flow.request.pretty_host.endswith(telegram_api_domain):
             data = {}
-            data['payload'] = flow.request.get_text()
-            data['headers'] = {key: value for (key, value) in flow.request.headers.items()}
-            data['url'] = flow.request.pretty_url
-            with open(self.outfile, 'a') as fd:
+            data["payload"] = flow.request.get_text()
+            data["headers"] = {
+                key: value for (key, value) in flow.request.headers.items()
+            }
+            data["url"] = flow.request.pretty_url
+            with open(self.outfile, "a") as fd:
                 json.dump(data, fd)
-                fd.write('\n')
+                fd.write("\n")
 
             flow.response = http.HTTPResponse.make(
-                201,
-                b"Logged data to logs/telegram.log",
-                {"Content-Type": "text/html"}
+                201, b"Logged data to logs/telegram.log", {"Content-Type": "text/html"}
             )
 
 
-addons = [
-    BlockTelegram()
-]
+addons = [BlockTelegram()]
