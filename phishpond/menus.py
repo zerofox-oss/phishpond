@@ -32,7 +32,6 @@ class Menus(object):
     @classmethod
     def launcher(cls):
         cli = Bullet(
-            # prompt="Select a menu option from below.\n",
             choices=["Start/Stop", "Status", "Attach", "Configure", "Exit"],
             **cls.b_opts
         )

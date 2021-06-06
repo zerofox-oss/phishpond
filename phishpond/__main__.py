@@ -24,6 +24,7 @@ def main():
 
     try:
         print(menus.banner)
+        print("Feature requests and PR's welcome!\nhttps://github.com/zerofox-oss/phishpond\n")
         while True:
             result = menus.launcher()
 
