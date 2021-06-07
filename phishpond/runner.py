@@ -25,9 +25,17 @@ def print_status():
     status_table = Table()
     status_table.add_column("Module")
     status_table.add_column("State")
+    status_table.add_column("URL")
     states = get_status()
     for state in states:
-        status_table.add_row(state, states[state])
+        url = "N/A"
+        if state == "pp_mitmproxy":
+            url = "http://localhost:8080"
+        if state == "pp_webserver":
+            url = "http://localhost:80"
+        if state == "pp_browser":
+            url = "http://localhost:5800"
+        status_table.add_row(state, states[state], url)
 
     console.print(status_table)
     print("\n")
