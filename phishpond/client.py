@@ -102,6 +102,25 @@ def setup():
     client.networks.create("pp_network", driver="bridge", check_duplicate=True)
     print("Created docker bridge network: pp_network\n")
 
+    # validate config
+    valid_config = Configs.validate_mounts()
+    while not valid_config:
+        print("\nSet required mount paths")
+        key = menus.config_key("MOUNTS")
+        if key == "Exit":
+            return
+
+        value = menus.config_input("MOUNTS", key)
+        value = value.strip()
+
+        if not value or cfg["MOUNTS"][key] == value:
+            pass
+        else:
+            cfg.set("MOUNTS", key, value)
+            with open(os.path.join(os.path.dirname(__file__), "config.ini"), "w") as ini:
+                cfg.write(ini)
+        valid_config = Configs.validate_mounts()
+
     # build images
     client = docker.APIClient(base_url="unix://var/run/docker.sock")
     i = 0
