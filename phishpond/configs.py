@@ -53,6 +53,7 @@ class Configs:
         "remove": True,
         # "auto_remove": True,
         "ports": {80: 80, 443: 443},
+        "links": {"pp_mitmproxy": "pp_mitmproxy"},
         "volumes": {
             "pp-mitm-volume": {
                 "bind": "/usr/local/share/ca-certificates/extra/",
