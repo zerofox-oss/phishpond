@@ -52,7 +52,7 @@ class Menus(object):
 
     @classmethod
     def volume_prompt(cls):
-        vols = ["pp-mitm-volume", "pp-mysql-db-data", "pp-postgres-db-data", "pp-browser-volume"]
+        vols = ["pp-mitm-volume", "pp-mysql-db-data", "pp-postgres-db-data", "pp-browser-data"]
         cli = Check(
             prompt="Choose volumes to rebuild or press ENTER to leave all existing data\n",
             choices=vols,
