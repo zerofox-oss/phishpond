@@ -8,6 +8,7 @@ import re
 from rich.prompt import Confirm
 from rich import print
 from .configs import Configs, cfg
+import time
 
 
 docker_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "docker"))
@@ -189,10 +190,16 @@ def run(module):
     ) as progress:
         task = progress.add_task(f"Starting {module}", total=1, start=True)
         try:
-            client.containers.run(module, **images[module]["config"])
+            state = "not_running"
+            while state != "running":
+                client.containers.run(module, **images[module]["config"])
+                time.sleep(3)  # give a few seconds for it to wake up
+                state = client.containers.get(module)  # check status
         except docker.errors.APIError as e:
             if e.response.status_code == 409:
-                print(f"{module} already running")
+                pass  # already running
+            else:
+                print(e)
         progress.update(task, total=1, advance=1)
 
 
