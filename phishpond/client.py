@@ -173,7 +173,9 @@ def kill(module):
 
 
 def stop_phishpond():
-    for module in images.keys():
+    containers = get_status()
+    running = [name for name, status in containers.items() if status == "running"]
+    for module in running:
         kill(module)
     print("\n")
 
