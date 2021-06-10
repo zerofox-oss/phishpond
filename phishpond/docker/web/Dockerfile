@@ -2,6 +2,9 @@ FROM php:7.4.2-apache-buster
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+EXPOSE 80
+EXPOSE 443
+
 # Update
 RUN apt-get clean && \
     apt-get -y update --fix-missing && \
@@ -86,3 +89,6 @@ RUN chmod +x /usr/local/bin/phpsendmail
 # Cleanup
 RUN rm -rf /usr/src/*
 
+ENV http_proxy=http://mitmproxy:8080
+ENV HTTPS_PROXY=http://mitmproxy:8080
+ENV XDEBUG_CONFIG="remote_host=localhost remote_port=9000 remote_enable=1"

@@ -16,6 +16,8 @@ newrelic.ini
 newrelic_agent.log
 
 www/kits/**
+logs/
+!logs/.gitkeep
 
 # CI
 reports

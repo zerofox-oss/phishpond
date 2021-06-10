@@ -1,29 +1,32 @@
 version: "3.5"
 
 services:
-  webserver:
+  pp_webserver:
     build:
-      context: ./docker/web
+      context: ./phishpond/docker/web
     depends_on:
-      - mitmproxy
-    container_name: 'webserver'
+      - pp_mitmproxy
+    container_name: 'pp_webserver'
     hostname: 'phishpond.local'
     restart: 'always'
+    ports:
+      - "80:80"
+      - "443:443"
     environment:
-      - http_proxy=http://mitmproxy:8080
-      - HTTPS_PROXY=http://mitmproxy:8080
+      - http_proxy=http://pp_mitmproxy:8080
+      - HTTPS_PROXY=http://pp_mitmproxy:8080
       - XDEBUG_CONFIG="remote_host=localhost remote_port=9000 remote_enable=1"
     links:
-      - mitmproxy
-      - db
+      - pp_mitmproxy
+      - pp_db
     volumes:
       - ./www:/var/www/html
-      - ./configs/web/vhosts:/etc/apache2/sites-enabled/
-      - ./configs/php/php.ini:/usr/local/etc/php/php.ini
-      - ./configs/php/patch.php:/usr/local/bin/patch.php
-      - ./configs/php/unpatch.php:/usr/local/bin/unpatch.php
+      - ./phishpond/docker/configs/web/vhosts:/etc/apache2/sites-enabled/
+      - ./phishpond/docker/configs/php/php.ini:/usr/local/etc/php/php.ini
+      - ./phishpond/docker/configs/php/patch.php:/usr/local/bin/patch.php
+      - ./phishpond/docker/configs/php/unpatch.php:/usr/local/bin/unpatch.php
       - ./logs:/var/log/phishpond/
-      - mitm-volume:/usr/local/share/ca-certificates/extra/
+      - pp-mitm-volume:/usr/local/share/ca-certificates/extra/
     command: >
       bash -c "cp /usr/local/share/ca-certificates/extra/mitmproxy-ca-cert.{pem,crt} &&
       update-ca-certificates --verbose &&
@@ -34,67 +37,68 @@ services:
         aliases:
           - phishpond.local
 
-  mitmproxy:
+  pp_mitmproxy:
     build:
-      context: ./docker/mitmproxy
-    container_name: 'mitmproxy'
+      context: ./phishpond/docker/mitmproxy
+    container_name: 'pp_mitmproxy'
     restart: 'always'
     command: > 
       bash -c "mitmweb --web-host 0.0.0.0 --set confdir=/home/mitmproxy/.mitmproxy --set relax_http_form_validation --ignore-hosts '(mozilla\.com|mozilla\.net|detectportal\.firefox\.com)' &&
       chmod -R 777 /home/mitmproxy/logs/"
     ports:
       - "8080:8081"
-    tty: true
     volumes:
-      - mitm-volume:/home/mitmproxy/.mitmproxy/
-      - ./configs/mitmproxy/config.yaml:/home/mitmproxy/.mitmproxy/config.yaml
+      - pp-mitm-volume:/home/mitmproxy/.mitmproxy/
+      - ./phishpond/docker/configs/mitmproxy/config.yaml:/home/mitmproxy/.mitmproxy/config.yaml
       - ./logs:/home/mitmproxy/logs
     networks:
       - phishpond_network
 
-  browser:
+  pp_browser:
     build:
       context: https://github.com/jlesage/docker-firefox.git
       shm_size: '2gb'
     ports:
       - "5800:5800"
-    container_name: 'firefox'
+    container_name: 'pp_browser'
     volumes:
-      - browser-volume:/config:rw
-      - mitm-volume:/config/certs/
+      - pp-browser-data:/config:rw
+      - pp-mitm-volume:/config/certs/
     depends_on:
-      - mitmproxy
+      - pp_mitmproxy
     links:
-      - mitmproxy
-      - webserver
+      - pp_mitmproxy
+      - pp_webserver
     networks:
       - phishpond_network
     environment:
       - FF_PREF_PROXY_TYPE=network.proxy.type=1
-      - FF_PREF_HTTP_PROXY=network.proxy.http=\"mitmproxy\"
+      - FF_PREF_HTTP_PROXY=network.proxy.http=\"pp_mitmproxy\"
       - FF_PREF_HTTP_PROXY_PORT=network.proxy.http_port=8080
-      - FF_PREF_HTTPS_PROXY=network.proxy.ssl=\"mitmproxy\"
+      - FF_PREF_HTTPS_PROXY=network.proxy.ssl=\"pp_mitmproxy\"
       - FF_PREF_HTTPS_PROXY_PORT=network.proxy.ssl_port=8080
       - FF_PREF_CAPTIVE_PORTAL=network.captive-portal-service.enabled=false
       - DISPLAY_WIDTH=1280
       - DISPLAY_HEIGHT=768
 
-  db:
+  pp_db:
     image: mysql:5.7
     volumes:
-      - db_data:/var/lib/mysql
+      - pp-db-data:/var/lib/mysql
     restart: always
-    container_name: 'db'
+    container_name: 'pp_db'
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: phishpond_db
       MYSQL_USER: phishpond
       MYSQL_PASSWORD: password
+    networks:
+      - phishpond_network
 
 volumes:
-  mitm-volume:
-  browser-volume:
-  db_data:
+  pp-mitm-volume:
+  pp-browser-data:
+  pp-db-data:
 
 networks:
   phishpond_network:

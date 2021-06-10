@@ -3,7 +3,44 @@
 </p>
 
 ## What is phishpond?
-It's a pre-built docker environment which allows you to quickly, easily and safely spin up phishing kits for analysis. Out of the box you can browse, "mitm" web traffic, log mail calls to flat files and debug PHP code remotely.
+It's a pre-built dockerised environment which allows you to quickly and easily spin up phishing kits for analysis. Out of the box you can host and browse kits, "mitm" web traffic, log mail and telegram calls to flat files, and debug PHP code.
+
+## Installing
+You can use phishpond either as a CLI package, or use the included `docker-compose.yml` to build and manage the containers manually.
+
+### CLI
+Clone the repository
+```bash
+git clone https://github.com/zerofox-oss/phishpond
+```
+
+Install the requirements
+```bash
+pip install -r requirements.txt
+```
+
+Install phishpond
+```bash
+pip install -e .
+```
+
+Run phishpond setup
+```bash
+phishpond --setup
+```
+
+Follow the prompts to build the required containers, volumes, networks, and set required variables.
+
+### Compose
+Clone the repository
+```bash
+git clone https://github.com/zerofox-oss/phishpond
+```
+
+Run docker-compose
+```bash
+docker-compose up
+```
 
 ## How to use
 1. `git clone https://github.com/zerofox-oss/phishpond.git`
