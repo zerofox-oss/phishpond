@@ -1,4 +1,4 @@
-FROM php:7.4.2-apache-buster
+FROM php:7.4.23-apache-buster
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -34,7 +34,7 @@ RUN apt-get -y update && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Install xdebug
-RUN pecl install xdebug-2.9.8 && \
+RUN pecl install xdebug-3.0.4 && \
     docker-php-ext-enable xdebug 
 
 ## Install runkit
@@ -42,7 +42,7 @@ RUN pecl install xdebug-2.9.8 && \
 #    docker-php-ext-enable runkit7
 
 # Install uopz
-RUN pecl install uopz && \
+RUN pecl install uopz-6.1.2 && \
     docker-php-ext-enable uopz 
 
 	
